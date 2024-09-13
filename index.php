@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 require 'db.php';
 require 'models/Ad.php';
 require 'models/Subscription.php';
+require 'email.php'; // Логіка відправки email
 
 $adModel = new Ad($pdo);
 $subscriptionModel = new Subscription($pdo);
@@ -31,9 +32,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $adId = $ad['id'];
     }
 
+    // Генеруємо токен підтвердження
+    $verificationToken = bin2hex(random_bytes(16));
+
     // Створюємо підписку
-    $subscriptionModel->create($adId, $email);
-    echo "Subscribed successfully!";
+    if ($subscriptionModel->create($adId, $email, $verificationToken)) {
+        $confirmationLink = "http://localhost:8000/verify.php?token=$verificationToken";
+
+        // Надсилаємо email підтвердження
+        sendEmailConfirmation($email, $confirmationLink);
+
+        echo "Subscribed successfully! Please check your email to confirm your subscription.";
+    } else {
+        echo "Error creating subscription.";
+    }
 }
 
 // Функція для отримання ціни оголошення через парсинг HTML сторінки
@@ -87,4 +99,3 @@ function scrapeAdPrice($url)
         throw new Exception("Could not find the price on the OLX page.");
     }
 }
-

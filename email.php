@@ -35,3 +35,32 @@ function sendEmail($to, $adUrl, $newPrice)
     }
 }
 
+function sendEmailConfirmation($to, $confirmationLink)
+{
+    $mail = new PHPMailer(true);
+
+    try {
+        // Налаштування SMTP для Mailtrap
+        $mail->isSMTP();
+        $mail->Host = 'sandbox.smtp.mailtrap.io';
+        $mail->SMTPAuth = true;
+        $mail->Username = '9196ec3cbfc384';
+        $mail->Password = 'c8ec1ffc7e6ad3';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 2525;
+
+        // Відправник і одержувач
+        $mail->setFrom('noreply@example.com', 'Price Tracker');
+        $mail->addAddress($to);
+
+        // Вміст листа
+        $mail->isHTML(true);
+        $mail->Subject = 'Email Confirmation Required';
+        $mail->Body = "Please confirm your subscription by clicking the following link: <a href='$confirmationLink'>$confirmationLink</a>";
+
+        $mail->send();
+        echo "Confirmation email has been sent to $to\n";
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}\n";
+    }
+}
