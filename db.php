@@ -1,6 +1,6 @@
 <?php
 
-require 'vendor/autoload.php'; // Підключаємо Composer autoload, якщо використовується
+require 'vendor/autoload.php';
 
 use Dotenv\Dotenv;
 

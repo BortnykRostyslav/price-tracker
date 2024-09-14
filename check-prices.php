@@ -56,6 +56,7 @@ function getAdPrice($url)
 
     if ($priceNode->length > 0) {
         $priceText = $priceNode->item(0)->textContent;
+
         // Очищення тексту ціни (видалення пробілів та символів валют)
         $price = preg_replace('/[^0-9]/', '', $priceText);
         echo "Ad Price: $price\n";
